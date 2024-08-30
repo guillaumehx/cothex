@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
-class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({super.key});
+class CategoryState extends StatefulWidget {
+
+  const CategoryState({super.key});
+
+  @override
+  State<CategoryState> createState() => CategoryScreen();
+}
+
+class CategoryScreen extends State<CategoryState> {
 
   @override
   Widget build(BuildContext context) {
@@ -11,12 +18,7 @@ class CategoryScreen extends StatelessWidget {
         title: Text("CategoryScreen"),
       ),
       body: Center(
-        child: ElevatedButton(
-          child: const Text('Open route'),
-          onPressed: () {
-            // Navigate to second route when tapped.
-          },
-        ),
+        child: Text("Welcome to the category page")
       ),
     );
   }

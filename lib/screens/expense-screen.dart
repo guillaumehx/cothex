@@ -1,21 +1,36 @@
 import 'package:flutter/material.dart';
 import '../mongo.dart';
 
-
 class ExpenseState extends StatefulWidget {
+
   const ExpenseState({super.key});
 
   @override
   State<ExpenseState> createState() => ExpenseScreen();
 }
 
-
 class ExpenseScreen extends State<ExpenseState> {
 
-  TextEditingController dateController = TextEditingController();
   TextEditingController amountController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
 
   final Mongo mongoDatabase = Mongo();
+
+  @override
+  void initState() {
+    amountController.text = "";
+    dateController.text = "";
+    mongoDatabase.connect();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    amountController.dispose();
+    dateController.dispose();
+    mongoDatabase.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,34 +70,23 @@ class ExpenseScreen extends State<ExpenseState> {
                       const Radius.circular(10.0),
                     ),
                   ),
-                  icon: Icon(Icons.calendar_month_outlined), //icon of text field
-                  labelText: "Enter Date" //label text of field
+                  icon: Icon(Icons.calendar_month_outlined),
+                  labelText: "Enter Date"
               ),
-              readOnly: true,  // when true user cannot edit text
+              readOnly: true,
               onTap: () async {
                 DateTime? pickedDate = await showDatePicker(
                     context: context,
-                    initialDate: DateTime.now(), //get today's date
-                    firstDate:DateTime(2000), //DateTime.now() - not to allow to choose before today.
+                    initialDate: DateTime.now(),
+                    firstDate:DateTime(2000),
                     lastDate: DateTime(2101)
                 );
 
-                if(pickedDate != null ){
-                  print(pickedDate);  //get the picked date in the format => 2022-07-04 00:00:00.000
-                  //String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
-                  // print(formattedDate); //formatted date output using intl package =>  2022-07-04
-                  //You can format date as per your need
-
-                  //setState(() {
-                  //  dateController.text = pickedDate.toString();
-                  //});
-                  //setState(() {
-                  //  dateController.text = formattedDate; //set foratted date to TextField value.
-                  //});
-                }else{
-                  print("Date is not selected");
+                if (pickedDate != null) {
+                  setState(() {
+                    dateController.text = pickedDate.toString();
+                  });
                 }
-
               }
           ),
           SizedBox(height: 10),
@@ -105,6 +109,7 @@ class ExpenseScreen extends State<ExpenseState> {
 
                 amountController.clear();
                 dateController.clear();
+                FocusScope.of(context).unfocus();
 
               },
               child: Text('Insert')

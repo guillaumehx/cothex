@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:test_flutthe/expenditure.dart';
-import 'package:test_flutthe/user.dart';
+import 'package:test_flutthe/models/user.dart';
 
 class Mongo {
   // Replace with your actual MongoDB connection string

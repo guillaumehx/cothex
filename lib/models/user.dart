@@ -1,6 +1,7 @@
 import 'package:mongo_dart/mongo_dart.dart';
 
 class User {
+
   final ObjectId id;
   final String? firstname;
   final String? lastname;
@@ -8,7 +9,6 @@ class User {
   final String? password;
   final String? role;
 
-  // Constructor
   User({
     required this.id,
     this.firstname,
@@ -18,7 +18,6 @@ class User {
     this.role,
   });
 
-  // Factory method to create a User object from a JSON object
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['_id'],
@@ -30,7 +29,6 @@ class User {
     );
   }
 
-  // Method to convert the User object to a JSON object
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
@@ -42,7 +40,6 @@ class User {
     };
   }
 
-  // Override toString for better logging/debugging
   @override
   String toString() {
     return 'User{id: $id, firstname: $firstname, lastname: $lastname, email: $email, password: $password, role: $role}';
