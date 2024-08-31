@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:test_flutthe/expenditure.dart';
+import 'package:test_flutthe/models/expenditure.dart';
 import 'package:test_flutthe/models/user.dart';
 
 class Mongo {
