@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:test_flutthe/models/expenditure.dart';
 import '../dialogs/confirm-dialog.dart';
 import '../dialogs/edit-dialog.dart';
+import '../forms/expense-form.dart';
 import '../mongo.dart';
 
 class ExpenseState extends StatefulWidget {
@@ -85,21 +86,20 @@ class ExpenseScreen extends State<ExpenseState> {
             );
           },
         ),
-        //floatingActionButton: FloatingActionButton(
-        //  onPressed: () => showDialog<String>(
-        //    context: context,
-        //    builder: (BuildContext context) => Dialog(
-        //      child: Padding(
-        //          padding: const EdgeInsets.all(8.0),
-        //          child: CategoryFormState(edit: false)
-        //      ),
-        //    ),
-        //  ),
-        //  backgroundColor: Colors.black,
-        //  tooltip: 'Increment',
-        //  child: const Icon(Icons.add),
-        //  //child: EditDialogExample(),
-        //)
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => Dialog(
+              child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ExpenseFormState(edit: false)
+              ),
+            ),
+          ),
+          backgroundColor: Colors.black,
+          tooltip: 'Increment',
+          child: const Icon(Icons.add),
+        )
     );
   }
 }

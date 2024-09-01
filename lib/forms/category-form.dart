@@ -49,7 +49,7 @@ class CategoryFormScreen extends State<CategoryFormState> {
                     width: 10.0
                 )
             ),
-            icon: Icon(Icons.category),
+            icon: Icon(Icons.list, color: Colors.black),
             hintText: "Name",
           ),
         ),
@@ -65,7 +65,7 @@ class CategoryFormScreen extends State<CategoryFormState> {
                     width: 10.0
                 )
             ),
-            icon: Icon(Icons.edit_note_outlined),
+            icon: Icon(Icons.add_link, color: Colors.black),
             hintText: "Alias",
           ),
         ),
