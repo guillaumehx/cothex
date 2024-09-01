@@ -19,7 +19,7 @@ class HomeScreen extends State<HomeState> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Colors.black,
         title: Text("HomeScreen"),
       ),
       drawer: Drawer(
@@ -28,9 +28,13 @@ class HomeScreen extends State<HomeState> {
             children: [
               const DrawerHeader(
                 decoration: BoxDecoration(
-                  color: Colors.lightGreen,
+                  color: Colors.black,
                 ),
-                child: Text('Drawer Header'),
+                child: Text('Drawer Header',
+                  style: TextStyle(
+                    color: Colors.white
+                  ),
+                ),
               ),
               ListTile(
                 title: Text("Expenses",

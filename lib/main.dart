@@ -17,18 +17,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(colorScheme: ColorScheme(
-        primary: Colors.purple,
-        secondary: Colors.blue,
-        brightness: Brightness.light,
-        onPrimary: Colors.black,
-        onSecondary: Colors.white,
-        surface: Colors.white,
-        error: Colors.red,
-        onError: Colors.red,
-        onSurface: Colors.white,
-        // all fields should have a value
-      )),
+        theme: ThemeData(
+          primaryColor: Colors.green,
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
+          useMaterial3: false,
+          //appBarTheme: AppBarTheme(
+          //  titleTextStyle: TextStyle(
+          //    backgroundColor: Colors.black,
+          //    color: Colors.white
+          //  ),
+          //  systemOverlayStyle: SystemUiOverlayStyle(
+          //      systemNavigationBarColor: Colors.black
+          //  )
+          //)
+        ),
       home: const MainPageState(title: 'Cothex'),
     );
   }
@@ -74,7 +76,7 @@ class MainPage extends State<MainPageState> {
   Widget build(BuildContext context) {
     return Scaffold(
       //appBar: AppBar(
-      //    backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      //    backgroundColor: Colors.black,//Theme.of(context).colorScheme.inversePrimary,
       //    title: Text("Cothex"),
       //    automaticallyImplyLeading: false
       //),
@@ -87,7 +89,7 @@ class MainPage extends State<MainPageState> {
              onPressed: () {
                startAuthentication();
              },
-             child: Text('Unlock')
+             child: Text("Unlock")
          )
       )
     );

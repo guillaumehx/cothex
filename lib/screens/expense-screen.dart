@@ -38,7 +38,7 @@ class ExpenseScreen extends State<ExpenseState> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Colors.black,
         title: Text("Expenses"),
       ),
       body: Column(
@@ -56,6 +56,9 @@ class ExpenseScreen extends State<ExpenseState> {
                 borderRadius: const BorderRadius.all(
                   const Radius.circular(10.0),
                 ),
+                borderSide: BorderSide(
+                  width: 10.0
+                )
               ),
               icon: Icon(Icons.euro),
               hintText: 'Amount',
@@ -71,7 +74,7 @@ class ExpenseScreen extends State<ExpenseState> {
                     ),
                   ),
                   icon: Icon(Icons.calendar_month_outlined),
-                  labelText: "Enter Date"
+                  labelText: "Date"
               ),
               readOnly: true,
               onTap: () async {
@@ -93,8 +96,9 @@ class ExpenseScreen extends State<ExpenseState> {
           TextButton(
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white,
-                backgroundColor: Colors.lightGreen,
+                backgroundColor: Colors.grey,
                 minimumSize: Size.fromHeight(50),
+                padding: EdgeInsets.fromLTRB(10, 10, 10, 10)
               ),
 
               onPressed: () async {
