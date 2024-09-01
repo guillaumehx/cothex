@@ -1,4 +1,8 @@
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:test_flutthe/models/expenditure.dart';
+import '../dialogs/confirm-dialog.dart';
+import '../dialogs/edit-dialog.dart';
 import '../mongo.dart';
 
 class ExpenseState extends StatefulWidget {
@@ -11,120 +15,91 @@ class ExpenseState extends StatefulWidget {
 
 class ExpenseScreen extends State<ExpenseState> {
 
-  TextEditingController amountController = TextEditingController();
-  TextEditingController dateController = TextEditingController();
+  List<Expenditure> expenditures = List.empty();
 
   final Mongo mongoDatabase = Mongo();
 
   @override
   void initState() {
-    amountController.text = "";
-    dateController.text = "";
-    mongoDatabase.connect();
+    mongoDatabase.connect().then((success) {
+      mongoDatabase.fetchExpenditures().then((data) {
+        setState(() {
+          this.expenditures = data;
+        });
+      });
+    });
     super.initState();
   }
 
   @override
   void dispose() {
-    amountController.dispose();
-    dateController.dispose();
     mongoDatabase.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text("Expenses"),
-      ),
-      body: Column(
-        children: [
-          //ElevatedButton(
-          //  onPressed: () async {
-          //    List<Expenditure> expenditures = await mongoDatabase.fetchExpenditures();
-          //  },
-          //  child: Text('Next'),
-          //),
-          TextField(
-            controller: amountController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: const BorderRadius.all(
-                  const Radius.circular(10.0),
-                ),
-                borderSide: BorderSide(
-                  width: 10.0
-                )
-              ),
-              icon: Icon(Icons.euro),
-              hintText: 'Amount',
-            ),
-          ),
-          SizedBox(height: 10),
-          TextField(
-              controller: dateController,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(10.0),
-                    ),
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: Text("Expenditures"),
+        ),
+        body: ListView.separated(
+          itemCount: expenditures.length,
+          separatorBuilder: (context, index) {
+            return Divider(
+              thickness: 1,
+              color: Colors.grey,
+            );
+          },
+          itemBuilder: (context, index) {
+            return ExpandablePanel(
+              header: Text(expenditures.elementAt(index).amount.toString() + "€"),
+              collapsed: Text(expenditures.elementAt(index).date.toString()),
+              expanded:
+              Wrap(
+                spacing: 5,
+                children: [
+                  EditDialog(objectToEdit: expenditures.elementAt(index)),
+                  //TextButton(
+                  //    style: TextButton.styleFrom(
+                  //      foregroundColor: Colors.white,
+                  //      backgroundColor: Colors.black,
+                  //    ),
+                  //    onPressed: () {
+                  //    },
+                  //    child: Text("Edit")
+                  //),
+                  ConfirmDialog(
+                      onConfirm: () {
+
+                      }
                   ),
-                  icon: Icon(Icons.calendar_month_outlined),
-                  labelText: "Date"
-              ),
-              readOnly: true,
-              onTap: () async {
-                DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate:DateTime(2000),
-                    lastDate: DateTime(2101)
-                );
-
-                if (pickedDate != null) {
-                  setState(() {
-                    dateController.text = pickedDate.toString();
-                  });
-                }
-              }
-          ),
-          SizedBox(height: 10),
-          TextButton(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.grey,
-                minimumSize: Size.fromHeight(50),
-                padding: EdgeInsets.fromLTRB(10, 10, 10, 10)
+                ],
               ),
 
-              onPressed: () async {
-                print(amountController.value);
-                print(dateController.value);
-
-
-                await mongoDatabase.insertData({
-                  "amount": int.parse(amountController.text),
-                  "date": dateController.text,
-                });
-
-                amountController.clear();
-                dateController.clear();
-                FocusScope.of(context).unfocus();
-
-              },
-              child: Text('Insert')
-          )
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: ()  { },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+              //title:
+              //onTap: () {
+//
+              //},
+            );
+          },
+        ),
+        //floatingActionButton: FloatingActionButton(
+        //  onPressed: () => showDialog<String>(
+        //    context: context,
+        //    builder: (BuildContext context) => Dialog(
+        //      child: Padding(
+        //          padding: const EdgeInsets.all(8.0),
+        //          child: CategoryFormState(edit: false)
+        //      ),
+        //    ),
+        //  ),
+        //  backgroundColor: Colors.black,
+        //  tooltip: 'Increment',
+        //  child: const Icon(Icons.add),
+        //  //child: EditDialogExample(),
+        //)
     );
   }
 }

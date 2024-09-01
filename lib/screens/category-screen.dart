@@ -1,5 +1,11 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:test_flutthe/dialogs/confirm-dialog.dart';
+import 'package:test_flutthe/dialogs/edit-dialog.dart';
+import 'package:test_flutthe/forms/category-form.dart';
+
+import '../models/category.dart';
+import '../mongo.dart';
 
 class CategoryState extends StatefulWidget {
 
@@ -11,7 +17,27 @@ class CategoryState extends StatefulWidget {
 
 class CategoryScreen extends State<CategoryState> {
 
-  final List<String> items = List<String>.generate(100, (i) => 'Item $i');
+  List<Category> categories = List.empty();
+
+  final Mongo mongoDatabase = Mongo();
+
+  @override
+  void initState() {
+    mongoDatabase.connect().then((success) {
+      mongoDatabase.fetchCategories().then((data) {
+        setState(() {
+          this.categories = data;
+        });
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    mongoDatabase.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +47,7 @@ class CategoryScreen extends State<CategoryState> {
         title: Text("Categories"),
       ),
       body: ListView.separated(
-        itemCount: items.length,
+        itemCount: categories.length,
           separatorBuilder: (context, index) {
             return Divider(
               thickness: 1,
@@ -38,13 +64,13 @@ class CategoryScreen extends State<CategoryState> {
         //),
         itemBuilder: (context, index) {
           return ExpandablePanel(
-            header: Text(items[index]),
-            collapsed: Text(""),
+            header: Text(categories.elementAt(index).name),
+            collapsed: Text(categories.elementAt(index).alias),
             expanded:
             Wrap(
               spacing: 5,
               children: [
-                EditDialogExample(),
+                EditDialog(objectToEdit: categories.elementAt(index)),
                 //TextButton(
                 //    style: TextButton.styleFrom(
                 //      foregroundColor: Colors.white,
@@ -54,7 +80,9 @@ class CategoryScreen extends State<CategoryState> {
                 //    },
                 //    child: Text("Edit")
                 //),
-                DialogExample(),
+                ConfirmDialog(onConfirm: () {
+
+                }),
               ],
             ),
 
@@ -71,87 +99,7 @@ class CategoryScreen extends State<CategoryState> {
           builder: (BuildContext context) => Dialog(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  //ElevatedButton(
-                  //  onPressed: () async {
-                  //    List<Expenditure> expenditures = await mongoDatabase.fetchExpenditures();
-                  //  },
-                  //  child: Text('Next'),
-                  //),
-                  TextField(
-                    //controller: amountController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: const BorderRadius.all(
-                            const Radius.circular(10.0),
-                          ),
-                          borderSide: BorderSide(
-                              width: 10.0
-                          )
-                      ),
-                      icon: Icon(Icons.euro),
-                      hintText: 'Amount',
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    //controller: dateController,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: const BorderRadius.all(
-                              const Radius.circular(10.0),
-                            ),
-                          ),
-                          icon: Icon(Icons.calendar_month_outlined),
-                          labelText: "Date"
-                      ),
-                      readOnly: true,
-                      onTap: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate:DateTime(2000),
-                            lastDate: DateTime(2101)
-                        );
-
-                        if (pickedDate != null) {
-                          //setState(() {
-                          //  dateController.text = pickedDate.toString();
-                          //});
-                        }
-                      }
-                  ),
-                  SizedBox(height: 10),
-                  TextButton(
-                      style: TextButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.black,
-                          minimumSize: Size.fromHeight(50),
-                          padding: EdgeInsets.fromLTRB(10, 10, 10, 10)
-                      ),
-
-                      onPressed: () async {
-                        //print(amountController.value);
-                        //print(dateController.value);
-//
-//
-                        //await mongoDatabase.insertData({
-                        //  "amount": int.parse(amountController.text),
-                        //  "date": dateController.text,
-                        //});
-//
-                        //amountController.clear();
-                        //dateController.clear();
-                        FocusScope.of(context).unfocus();
-
-                      },
-                      child: Text("Update")
-                  )
-                ],
-              ),
+              child: CategoryFormState(edit: false)
             ),
           ),
         ),
@@ -160,165 +108,6 @@ class CategoryScreen extends State<CategoryState> {
         child: const Icon(Icons.add),
         //child: EditDialogExample(),
       )
-    );
-  }
-}
-
-class EditDialogExample extends StatelessWidget {
-  const EditDialogExample({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      //mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        TextButton(
-          style: TextButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.black,
-          ),
-          onPressed: () => showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => Dialog(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    //ElevatedButton(
-                    //  onPressed: () async {
-                    //    List<Expenditure> expenditures = await mongoDatabase.fetchExpenditures();
-                    //  },
-                    //  child: Text('Next'),
-                    //),
-                    TextField(
-                      //controller: amountController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: const BorderRadius.all(
-                              const Radius.circular(10.0),
-                            ),
-                            borderSide: BorderSide(
-                                width: 10.0
-                            )
-                        ),
-                        icon: Icon(Icons.euro),
-                        hintText: 'Amount',
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    TextField(
-                        //controller: dateController,
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
-                              ),
-                            ),
-                            icon: Icon(Icons.calendar_month_outlined),
-                            labelText: "Date"
-                        ),
-                        readOnly: true,
-                        onTap: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate:DateTime(2000),
-                              lastDate: DateTime(2101)
-                          );
-
-                          if (pickedDate != null) {
-                           //setState(() {
-                           //  dateController.text = pickedDate.toString();
-                           //});
-                          }
-                        }
-                    ),
-                    SizedBox(height: 10),
-                    TextButton(
-                        style: TextButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            backgroundColor: Colors.black,
-                            minimumSize: Size.fromHeight(50),
-                            padding: EdgeInsets.fromLTRB(10, 10, 10, 10)
-                        ),
-
-                        onPressed: () async {
-                          //print(amountController.value);
-                          //print(dateController.value);
-//
-//
-                          //await mongoDatabase.insertData({
-                          //  "amount": int.parse(amountController.text),
-                          //  "date": dateController.text,
-                          //});
-//
-                          //amountController.clear();
-                          //dateController.clear();
-                          FocusScope.of(context).unfocus();
-
-                        },
-                        child: Text("Update")
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          child: Text("Edit"),
-        ),
-      ],
-    );
-  }
-}
-
-class DialogExample extends StatelessWidget {
-  const DialogExample({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      //mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        TextButton(
-          style: TextButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.black,
-          ),
-          onPressed: () => showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => Dialog(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const SizedBox(height: 10),
-                    const Text('Confirm deletion of category ?'),
-                    const SizedBox(height: 10),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        // TODO delete
-                      },
-                      child: const Text("Yes"),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text("No"),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          child: const Text("Delete"),
-        ),
-      ],
     );
   }
 }

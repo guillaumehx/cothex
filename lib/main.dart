@@ -84,7 +84,7 @@ class MainPage extends State<MainPageState> {
          child: TextButton(
              style: TextButton.styleFrom(
                foregroundColor: Colors.white,
-               backgroundColor: Colors.lightGreen,
+               backgroundColor: Colors.black,
              ),
              onPressed: () {
                startAuthentication();

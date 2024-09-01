@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:test_flutthe/models/expenditure.dart';
 import 'package:test_flutthe/models/user.dart';
+
+import 'models/category.dart';
 
 class Mongo {
   // Replace with your actual MongoDB connection string
@@ -35,14 +38,11 @@ class Mongo {
   Future<List<Expenditure>> fetchExpenditures() async {
     final collection = _db.collection('expenditure');
     return await collection.find().map((e) => Expenditure.fromJson(e)).toList();
+  }
 
-    //Map<String, dynamic>? v1 = await collection.findOne({"email": "guillaumehx@outlook.com"});
-//
-    //if (v1 != null) {
-    //  print(User.fromJson(v1).id.oid);
-    //}
-
-    //return await collection.find().toList();
+  Future<List<Category>> fetchCategories() async {
+   final collection = _db.collection("category");
+   return await  collection.find().map((c) => Category.fromJson(c)).toList();
   }
 
   Future<void> close() async {
